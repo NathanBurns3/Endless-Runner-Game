@@ -24,8 +24,21 @@ window.onload = function () {
             default: "arcade"
         }
     };
+
+    // Gets user's coordinates through the HTML Geolocation API
+    const successCallback = (position) => {
+        // Successful: prints coordinates to console
+        console.log(position);
+    };
+    const errorCallback = (error) => {
+        // Fails: prints error message to console
+        console.log(error);
+    };
+    navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+
     game = new Phaser.Game(gameConfig);
     window.focus();
+    // * Doesn't like resize
     window.addEventListener("resize", resize, false);
 };
 
@@ -36,8 +49,9 @@ class playGame extends Phaser.Scene {
     }
     // Load assets required for the game
     preload() {
-        this.load.image("platform", "platform.png");
-        this.load.image("player", "player.png");
+        this.load.image("platform", "Sprites/platform.png");
+        this.load.image("player", "Sprites/player.png");
+        this.load.image("background", "Backgrounds/City/City1.png;")
     }
     // Set up the game objects and initial state
     create() {
