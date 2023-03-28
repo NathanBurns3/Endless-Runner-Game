@@ -9,7 +9,8 @@ let gameOptions = {
     playerGravity: 1000,
     jumpForce: 500,
     playerStartPosition: 200,
-    jumps: 1
+    jumps: 1,
+    backgroundSpeed: 5
 };
 
 // Configure game settings and start the game
@@ -51,10 +52,13 @@ class playGame extends Phaser.Scene {
     preload() {
         this.load.image("platform", "Sprites/platform.png");
         this.load.image("player", "Sprites/player.png");
-        this.load.image("background", "Backgrounds/City/City1.png;")
+        this.load.image("background", "Test.png");
     }
     // Set up the game objects and initial state
     create() {
+        // Add the game background
+        this.add.sprite(0, 0, "background").setOrigin(0, 0);
+
         // Create platform group and configure its callback
         this.platformGroup = this.add.group({
             removeCallback: function (platform) {
@@ -67,6 +71,11 @@ class playGame extends Phaser.Scene {
                 platform.scene.platformGroup.add(platform);
             }
         });
+
+        // Create the background image and set its properties
+        this.background = this.add.tileSprite(0, 0, game.config.width, game.config.height, "background");
+        this.background.setOrigin(0, 0);
+        this.background.setScrollFactor(0);
 
         // Initialize the player's jump count
         this.playerJumps = 0;
@@ -129,6 +138,10 @@ class playGame extends Phaser.Scene {
         if (this.player.y > game.config.height) {
             this.scene.start("PlayGame");
         }
+
+        // Have the background move
+        this.background.tilePositionX += gameOptions.backgroundSpeed;
+
         // Keep the player at a fixed horizontal position
         this.player.x = gameOptions.playerStartPosition;
 
