@@ -9,7 +9,9 @@ let gameOptions = {
     playerGravity: 1000,
     jumpForce: 500,
     playerStartPosition: 200,
-    jumps: 1
+    jumps: 1,
+    score: 0,
+    highScore: 0
 };
 
 // Configure game settings and start the game
@@ -18,7 +20,7 @@ window.onload = function () {
         type: Phaser.AUTO,
         width: 1334,
         height: 750,
-        scene: playGame,
+        scene: [playGame, gameOver],
         backgroundColor: 0x444444,
         physics: {
             default: "arcade"
@@ -27,6 +29,7 @@ window.onload = function () {
     game = new Phaser.Game(gameConfig);
     window.focus();
     window.addEventListener("resize", resize, false);
+    resize();
 };
 
 // Create the main playGame scene class
@@ -41,6 +44,13 @@ class playGame extends Phaser.Scene {
     }
     // Set up the game objects and initial state
     create() {
+        // Set the initial score to 0
+        gameOptions.score = 0;
+
+        // Create the score text and high score text
+        this.scoreText = this.add.text(10, 10, "Score: " + gameOptions.score, { font: "24px Arial", fill: "#ffffff" });
+        this.highScoreText = this.add.text(10, 40, "High Score: " + gameOptions.highScore, { font: "24px Arial", fill: "#ffffff" });
+
         // Create platform group and configure its callback
         this.platformGroup = this.add.group({
             removeCallback: function (platform) {
@@ -69,6 +79,8 @@ class playGame extends Phaser.Scene {
 
         // Listen for spacebar input to trigger the jump action
         this.input.keyboard.on("keydown-SPACE", this.jump, this);
+        //prevent spacebar from scrolling the page
+        this.input.keyboard.addCapture("SPACE");
     }
 
     // Function to add new platforms to the game
@@ -113,10 +125,24 @@ class playGame extends Phaser.Scene {
     update() {
         // Restart the scene if the player falls off the screen
         if (this.player.y > game.config.height) {
-            this.scene.start("PlayGame");
+            // Update the high score if necessary
+            if (gameOptions.score > gameOptions.highScore) {
+                gameOptions.highScore = gameOptions.score;
+            }
+
+            //Show game over overlay
+            this.scene.start("gameOver", {
+                score: gameOptions.score,
+                highScore: gameOptions.highScore
+            });
         }
         // Keep the player at a fixed horizontal position
         this.player.x = gameOptions.playerStartPosition;
+
+        //Update the score
+        gameOptions.score += 1;
+        this.scoreText.setText("Score: " + gameOptions.score);
+        this.highScoreText.setText("High Score: " + gameOptions.highScore);
 
         // Calculate the minimum distance between the current platform and the right edge of the screen
         let minDistance = game.config.width;
@@ -136,4 +162,22 @@ class playGame extends Phaser.Scene {
             this.addPlatform(nextPlatformWidth, game.config.width + nextPlatformWidth / 2);
         }
     }
+}
+
+function resize() {
+    // Get the game canvas element and the browser window dimensions
+    let canvas = game.canvas, width = window.innerWidth, height = window.innerHeight;
+    //// Calculate the scale factor needed to maintain the game's aspect ratio
+    let scaleFactor = Math.min(width / game.config.width, height / game.config.height);
+
+    canvas.style.position = 'absolute';
+
+    // Set the canvas width and height based on the scale factor
+    canvas.style.width = (game.config.width * scaleFactor) + 'px';
+    canvas.style.height = (game.config.height * scaleFactor) + 'px';
+
+    // Center the canvas horizontally within the browser window
+    canvas.style.left = (width - game.config.width * scaleFactor) / 2 + 'px';
+    // Center the canvas vertically within the browser window
+    canvas.style.top = (height - game.config.height * scaleFactor) / 2 + 'px';
 }
