@@ -10,6 +10,7 @@ let gameOptions = {
     jumpForce: 500,
     playerStartPosition: 200,
     jumps: 1,
+    backgroundSpeed: 5,
     score: 0,
     highScore: 0
 };
@@ -44,6 +45,10 @@ class playGame extends Phaser.Scene {
     }
     // Set up the game objects and initial state
     create() {
+
+        // Add the game background
+        this.add.sprite(0, 0, "background").setOrigin(0, 0);
+
         // Set the initial score to 0
         gameOptions.score = 0;
 
