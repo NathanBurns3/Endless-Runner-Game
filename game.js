@@ -27,8 +27,21 @@ window.onload = function () {
             default: "arcade"
         }
     };
+
+    // Gets user's coordinates through the HTML Geolocation API
+    const successCallback = (position) => {
+        // Successful: prints coordinates to console
+        console.log(position);
+    };
+    const errorCallback = (error) => {
+        // Fails: prints error message to console
+        console.log(error);
+    };
+    navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+
     game = new Phaser.Game(gameConfig);
     window.focus();
+    // * Doesn't like resize
     window.addEventListener("resize", resize, false);
     resize();
 };
@@ -40,8 +53,9 @@ class playGame extends Phaser.Scene {
     }
     // Load assets required for the game
     preload() {
-        this.load.image("platform", "platform.png");
-        this.load.image("player", "player.png");
+        this.load.image("platform", "Sprites/platform.png");
+        this.load.image("player", "Sprites/player.png");
+        this.load.image("background", "Test.png");
     }
     // Set up the game objects and initial state
     create() {
@@ -68,6 +82,11 @@ class playGame extends Phaser.Scene {
                 platform.scene.platformGroup.add(platform);
             }
         });
+
+        // Create the background image and set its properties
+        this.background = this.add.tileSprite(0, 0, game.config.width, game.config.height, "background");
+        this.background.setOrigin(0, 0);
+        this.background.setScrollFactor(0);
 
         // Initialize the player's jump count
         this.playerJumps = 0;
@@ -141,6 +160,10 @@ class playGame extends Phaser.Scene {
                 highScore: gameOptions.highScore
             });
         }
+
+        // Have the background move
+        this.background.tilePositionX += gameOptions.backgroundSpeed;
+
         // Keep the player at a fixed horizontal position
         this.player.x = gameOptions.playerStartPosition;
 
