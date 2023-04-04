@@ -13,7 +13,7 @@ let gameOptions = {
     backgroundSpeed: 5,
     score: 0,
     highScore: 0,
-    platformSpeedIncrease: 0.05,
+    platformSpeedIncrease: 0.025,
     maxPlatformSpeed: 1200,
     scoreModifier: 1,
     fastFallForce: 1000,
