@@ -15,7 +15,9 @@ let gameOptions = {
     highScore: 0,
     platformSpeedIncrease: 0.05,
     maxPlatformSpeed: 1200,
-    scoreModifier: 1
+    scoreModifier: 1,
+    fastFallForce: 1000,
+    spaceReleased: true
 };
 
 // Configure game settings and start the game
@@ -103,6 +105,10 @@ class playGame extends Phaser.Scene {
 
         // Listen for spacebar input to trigger the jump action
         this.input.keyboard.on("keydown-SPACE", this.jump, this);
+        // Listen for spacebar key release
+        this.input.keyboard.on("keyup-SPACE", () => {
+            gameOptions.spaceReleased = true;
+        }, this);
         //prevent spacebar from scrolling the page
         this.input.keyboard.addCapture("SPACE");
     }
@@ -149,6 +155,12 @@ class playGame extends Phaser.Scene {
             this.player.setVelocityY(gameOptions.jumpForce * -1);
             // Increment the jump count
             this.playerJumps++;
+            gameOptions.spaceReleased = false;
+        }
+        // Check if the player is in the air and the fast fall has not been initiated yet
+        else if (!this.player.body.touching.down && gameOptions.spaceReleased) {
+            // Apply downward force to simulate a fast fall
+            this.player.setVelocityY(gameOptions.fastFallForce);
         }
     }
 
