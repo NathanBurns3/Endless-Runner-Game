@@ -12,8 +12,71 @@ let gameOptions = {
     jumps: 1,
     backgroundSpeed: 5,
     score: 0,
-    highScore: 0
+    highScore: 0,
+    backgroundChoice: "",
+    playerLatitude: 0,
+    playerLongitude: 0
 };
+
+// 2D array to hold backgrounds
+let backgrounds = [
+    ["Beach1.png", "Beach2.png", "Beach3.png", "Beach4.png"],
+    ["City1.png", "City2.png", "City3.png", "City4.png"],
+    ["Desert1.png", "Desert2.png", "Desert3.png", "Desert4.png"],
+    ["Forest1.png", "Forest2.png", "Forest3.png", "Forest4.png"],
+    ["Mountain1.png", "Mountain2.png", "Mountain3.png", "Mountain4.png"],
+    ["Farm1.png", "Farm2.png", "Farm3.png", "Farm4.png", ]
+];
+
+let cityCoordinates = [
+    //latitudes, longitudes
+    //New York
+    [40,41.5,-73.5,-74.5],
+    //LA and San Diego
+    [32,35,-116,-120],
+    //Chicago
+    [41.25,42.5,-87,-89],
+    //Houston
+    [28.5,30.5,-94.5,-96],
+    //Philadelphia
+    [39.5,40.5,-74.5,-75.5],
+    //Dallas
+    [32,33.5,-95,-98],
+    //Phoenix
+    [32.5,34,-110,-113],
+    //Cincinnati
+    [38.75,39.25,-84,-85],
+    //Columbus
+    [39.5,40.5,-82.25,-83.75],
+    //San Francisco
+    [36.5,39,-120,-124]
+]
+
+// function to pick the background
+function pickBackground(latitude, longitude) {
+    // City Area (Small pinpoints)
+    for (let i = 0; i < cityCoordinates.length; i++){
+            // latitude is greater than cities most south latitude, less than most north latitude.
+            // Longitude is greater than cities most west Longitude, less than most east Longitude.
+        if (latitude >= cityCoordinates[i][0] && latitude <= cityCoordinates[i][1] && longitude >= cityCoordinates[i][2] && longitude <= cityCoordinates[i][3]) {
+            // set the background to a random background in the cities image array
+            backgroundChoice = backgrounds[1][Math.floor(Math.random() * 4)];
+            return;
+        }
+    }
+    // Beach area (Coasts)
+    if (false) {
+
+    }
+    // Desert Area (Southwest)
+    // Forest Area (Northern areas)
+    // Mountain Area (Mountain Time)
+    // Farm Area (Default)
+    else {
+        backgroundChoice = backgrounds[5][Math.floor(Math.random() * 4)];
+        return;
+    }
+}
 
 // Configure game settings and start the game
 window.onload = function () {
@@ -38,6 +101,8 @@ window.onload = function () {
         console.log(error);
     };
     navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+    playerLatitude = position.coords.latitude;
+    playerLongitude = position.coords.longitude;
 
     game = new Phaser.Game(gameConfig);
     window.focus();
@@ -55,6 +120,8 @@ class playGame extends Phaser.Scene {
     preload() {
         this.load.image("platform", "Sprites/platform.png");
         this.load.image("player", "Sprites/player.png");
+        //pickBackground(playerLatitude, playerLongitude);
+        //this.load.image("background", backgroundChoice);
         this.load.image("background", "Test.png");
     }
     // Set up the game objects and initial state
