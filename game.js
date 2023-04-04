@@ -3,7 +3,7 @@ let game;
 
 // global game options
 let gameOptions = {
-    platformStartSpeed: 500,
+    platformStartSpeed: 450,
     spawnRange: [100, 350],
     platformSizeRange: [300, 500],
     playerGravity: 1000,
@@ -12,7 +12,10 @@ let gameOptions = {
     jumps: 1,
     backgroundSpeed: 5,
     score: 0,
-    highScore: 0
+    highScore: 0,
+    platformSpeedIncrease: 0.05,
+    maxPlatformSpeed: 1200,
+    scoreModifier: 1
 };
 
 // Configure game settings and start the game
@@ -119,10 +122,17 @@ class playGame extends Phaser.Scene {
         else {
             platform = this.physics.add.sprite(posX, game.config.height * 0.8, "platform");
             platform.setImmovable(true);
-            platform.setVelocityX(gameOptions.platformStartSpeed * -1);
             this.platformGroup.add(platform);
         }
+
+        // Calculate the current platform speed based on the score
+        let currentPlatformSpeed = Math.min(gameOptions.platformStartSpeed + gameOptions.score * gameOptions.platformSpeedIncrease, gameOptions.maxPlatformSpeed);
+
+        // Update the score modifier based on the current platform speed
+        gameOptions.scoreModifier = 1 + (currentPlatformSpeed - gameOptions.platformStartSpeed) / (gameOptions.maxPlatformSpeed - gameOptions.platformStartSpeed);
+
         // Set the platform's width and calculate the distance to the next platform
+        platform.setVelocityX(currentPlatformSpeed * -1);
         platform.displayWidth = platformWidth;
         this.nextPlatformDistance = Phaser.Math.Between(gameOptions.spawnRange[0], gameOptions.spawnRange[1]);
     }
@@ -166,9 +176,9 @@ class playGame extends Phaser.Scene {
         this.player.x = gameOptions.playerStartPosition;
 
         //Update the score
-        gameOptions.score += 1;
-        this.scoreText.setText("Score: " + gameOptions.score);
-        this.highScoreText.setText("High Score: " + gameOptions.highScore);
+        gameOptions.score += gameOptions.scoreModifier;
+        this.scoreText.setText("Score: " + Math.floor(gameOptions.score));
+        this.highScoreText.setText("High Score: " + Math.floor(gameOptions.highScore));
 
         // Calculate the minimum distance between the current platform and the right edge of the screen
         let minDistance = game.config.width;
