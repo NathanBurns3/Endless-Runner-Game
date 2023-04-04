@@ -59,10 +59,6 @@ class playGame extends Phaser.Scene {
     }
     // Set up the game objects and initial state
     create() {
-
-        // Add the game background
-        this.add.sprite(0, 0, "background").setOrigin(0, 0);
-
         // Set the initial score to 0
         gameOptions.score = 0;
 
@@ -87,6 +83,7 @@ class playGame extends Phaser.Scene {
         this.background = this.add.tileSprite(0, 0, game.config.width, game.config.height, "background");
         this.background.setOrigin(0, 0);
         this.background.setScrollFactor(0);
+        this.background.setDepth(-1);
 
         // Initialize the player's jump count
         this.playerJumps = 0;
@@ -154,8 +151,9 @@ class playGame extends Phaser.Scene {
                 gameOptions.highScore = gameOptions.score;
             }
 
+            this.scene.pause();
             //Show game over overlay
-            this.scene.start("gameOver", {
+            this.scene.launch("gameOver", {
                 score: gameOptions.score,
                 highScore: gameOptions.highScore
             });
