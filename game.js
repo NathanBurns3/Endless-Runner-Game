@@ -1,6 +1,3 @@
-// Initialize game variable
-let game;
-
 // global game options
 let gameOptions = {
     platformStartSpeed: 500,
@@ -15,21 +12,21 @@ let gameOptions = {
     highScore: 0,
     backgroundChoice: "",
     playerLatitude: 0,
-    playerLongitude: 0
+    playerLongitude: 0,
 };
 
 // 2D array to hold backgrounds
 let backgrounds = [
-    ["Beach1.png", "Beach2.png", "Beach3.png", "Beach4.png"],
-    ["City1.png", "City2.png", "City3.png", "City4.png"],
-    ["Desert1.png", "Desert2.png", "Desert3.png", "Desert4.png"],
-    ["Forest1.png", "Forest2.png", "Forest3.png", "Forest4.png"],
-    ["Mountain1.png", "Mountain2.png", "Mountain3.png", "Mountain4.png"],
-    ["Farm1.png", "Farm2.png", "Farm3.png", "Farm4.png", ]
+    ["Beach/Beach1.png", "Beach/Beach2.png", "Beach/Beach3.png", "Beach/Beach4.png"],
+    ["City/City1.png", "City/City2.png", "City/City3.png", "City/City4.png"],
+    ["Desert/Desert1.png", "Desert/Desert2.png", "Desert/Desert3.png", "Desert/Desert4.png"],
+    ["Forest/Forest1.png", "Forest/Forest2.png", "Forest/Forest3.png", "Forest/Forest4.png"],
+    ["Mountain/Mountain1.png", "Mountain/Mountain2.png", "Mountain/Mountain3.png", "Mountain/Mountain4.png"],
+    ["Farm/Farm1.png", "Farm/Farm2.png", "Farm/Farm3.png", "Farm/Farm4.png"]
 ];
 
 let cityCoordinates = [
-    //latitudes, longitudes
+    //latitude range, longitude range
     //New York
     [40,41.5,-73.5,-74.5],
     //LA and San Diego
@@ -58,9 +55,10 @@ function pickBackground(latitude, longitude) {
     for (let i = 0; i < cityCoordinates.length; i++){
             // latitude is greater than cities most south latitude, less than most north latitude.
             // Longitude is greater than cities most west Longitude, less than most east Longitude.
-        if (latitude >= cityCoordinates[i][0] && latitude <= cityCoordinates[i][1] && longitude >= cityCoordinates[i][2] && longitude <= cityCoordinates[i][3]) {
+        if (latitude >= cityCoordinates[i][0] && latitude <= cityCoordinates[i][1] && longitude <= cityCoordinates[i][2] && longitude >= cityCoordinates[i][3]) {
             // set the background to a random background in the cities image array
-            backgroundChoice = backgrounds[1][Math.floor(Math.random() * 4)];
+            backgroundChoice = "Backgrounds/" + backgrounds[1][Math.floor(Math.random() * 4)];
+            console.log("The function choose: " + backgroundChoice + " as the background");
             return;
         }
     }
@@ -73,59 +71,50 @@ function pickBackground(latitude, longitude) {
     // Mountain Area (Mountain Time)
     // Farm Area (Default)
     else {
-        backgroundChoice = backgrounds[5][Math.floor(Math.random() * 4)];
+        backgroundChoice = "Backgrounds/" + backgrounds[5][Math.floor(Math.random() * 4)];
+        console.log("The function choose: " + backgroundChoice + " as the background");
         return;
     }
 }
 
-// Configure game settings and start the game
-window.onload = function () {
-    let gameConfig = {
-        type: Phaser.AUTO,
-        width: 1334,
-        height: 750,
-        scene: [playGame, gameOver],
-        backgroundColor: 0x444444,
-        physics: {
-            default: "arcade"
-        }
-    };
-
-    // Gets user's coordinates through the HTML Geolocation API
-    const successCallback = (position) => {
-        // Successful: prints coordinates to console
-        console.log(position);
-    };
-    const errorCallback = (error) => {
-        // Fails: prints error message to console
-        console.log(error);
-    };
-    navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-    playerLatitude = position.coords.latitude;
-    playerLongitude = position.coords.longitude;
-
-    game = new Phaser.Game(gameConfig);
-    window.focus();
-    // * Doesn't like resize
-    window.addEventListener("resize", resize, false);
-    resize();
-};
-
 // Create the main playGame scene class
 class playGame extends Phaser.Scene {
+
     constructor() {
         super("PlayGame");
     }
+
+    init(data) {
+        console.log(data);
+        this.playerLatitude = data.lat;
+        this.playerLongitude = data.long;
+        gameOptions.playerLatitude = this.playerLatitude;
+        gameOptions.playerLongitude = this.playerLongitude;
+
+        console.log("gameloading lat: " + data.lat);
+        console.log("gameloading long: " + data.long);
+        console.log("this lat: " + this.playerLatitude);
+        console.log("this long: " + this.playerLongitude);
+        console.log("gameOptions lat: " + gameOptions.playerLatitude);
+        console.log("gameOptions long: " + gameOptions.playerLongitude);
+    }
+
     // Load assets required for the game
-    preload() {
+    preload() {  
+        pickBackground(gameOptions.playerLatitude, gameOptions.playerLongitude);
+        this.load.image("background", backgroundChoice);
         this.load.image("platform", "Sprites/platform.png");
-        this.load.image("player", "Sprites/player.png");
-        //pickBackground(playerLatitude, playerLongitude);
-        //this.load.image("background", backgroundChoice);
-        this.load.image("background", "Test.png");
+        this.load.image("player", "Sprites/player.png"); 
     }
     // Set up the game objects and initial state
     create() {
+        // Create the background image and set its properties
+        this.add.image(0, 0, "background").setOrigin(0);
+        this.background = this.add.tileSprite(0, 0, game.config.width, game.config.height, "background");
+        this.background.setOrigin(0, 0);
+        this.background.setScrollFactor(0);
+        this.background.setDepth(-1);
+
         // Set the initial score to 0
         gameOptions.score = 0;
 
@@ -145,12 +134,6 @@ class playGame extends Phaser.Scene {
                 platform.scene.platformGroup.add(platform);
             }
         });
-
-        // Create the background image and set its properties
-        this.background = this.add.tileSprite(0, 0, game.config.width, game.config.height, "background");
-        this.background.setOrigin(0, 0);
-        this.background.setScrollFactor(0);
-        this.background.setDepth(-1);
 
         // Initialize the player's jump count
         this.playerJumps = 0;
@@ -255,22 +238,4 @@ class playGame extends Phaser.Scene {
             this.addPlatform(nextPlatformWidth, game.config.width + nextPlatformWidth / 2);
         }
     }
-}
-
-function resize() {
-    // Get the game canvas element and the browser window dimensions
-    let canvas = game.canvas, width = window.innerWidth, height = window.innerHeight;
-    //// Calculate the scale factor needed to maintain the game's aspect ratio
-    let scaleFactor = Math.min(width / game.config.width, height / game.config.height);
-
-    canvas.style.position = 'absolute';
-
-    // Set the canvas width and height based on the scale factor
-    canvas.style.width = (game.config.width * scaleFactor) + 'px';
-    canvas.style.height = (game.config.height * scaleFactor) + 'px';
-
-    // Center the canvas horizontally within the browser window
-    canvas.style.left = (width - game.config.width * scaleFactor) / 2 + 'px';
-    // Center the canvas vertically within the browser window
-    canvas.style.top = (height - game.config.height * scaleFactor) / 2 + 'px';
 }
