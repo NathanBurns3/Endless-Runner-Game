@@ -1,8 +1,8 @@
 // global game options
 let gameOptions = {
     platformStartSpeed: 500,
-    spawnRange: [100, 350],
-    platformSizeRange: [300, 500],
+    spawnRange: [100, 500],
+    platformSizeRange: [275, 425],
     playerGravity: 1000,
     jumpForce: 500,
     playerStartPosition: 200,
@@ -67,8 +67,17 @@ function pickBackground(latitude, longitude) {
 
     }
     // Desert Area (Southwest)
-    // Forest Area (Northern areas)
+    else if (false) {
+
+    }
     // Mountain Area (Mountain Time)
+    else if (false) {
+        
+    }
+    // Forest Area (Northern areas)
+    else if (false) {
+
+    }
     // Farm Area (Default)
     else {
         backgroundChoice = "Backgrounds/" + backgrounds[5][Math.floor(Math.random() * 4)];
@@ -103,7 +112,7 @@ class playGame extends Phaser.Scene {
     preload() {  
         pickBackground(gameOptions.playerLatitude, gameOptions.playerLongitude);
         this.load.image("background", backgroundChoice);
-        this.load.image("platform", "Sprites/platform.png");
+        this.load.image("platform", "Sprites/road.png");
         this.load.image("player", "Sprites/player.png"); 
     }
     // Set up the game objects and initial state
