@@ -13,6 +13,11 @@ let gameOptions = {
     backgroundChoice: "",
     playerLatitude: 0,
     playerLongitude: 0,
+    platformSpeedIncrease: 0.025,
+    maxPlatformSpeed: 1200,
+    scoreModifier: 1,
+    fastFallForce: 1000,
+    spaceReleased: true
 };
 
 // 2D array to hold backgrounds
@@ -190,6 +195,10 @@ class playGame extends Phaser.Scene {
 
         // Listen for spacebar input to trigger the jump action
         this.input.keyboard.on("keydown-SPACE", this.jump, this);
+        // Listen for spacebar key release
+        this.input.keyboard.on("keyup-SPACE", () => {
+            gameOptions.spaceReleased = true;
+        }, this);
         //prevent spacebar from scrolling the page
         this.input.keyboard.addCapture("SPACE");
     }
@@ -209,10 +218,17 @@ class playGame extends Phaser.Scene {
         else {
             platform = this.physics.add.sprite(posX, game.config.height * 0.8, "platform");
             platform.setImmovable(true);
-            platform.setVelocityX(gameOptions.platformStartSpeed * -1);
             this.platformGroup.add(platform);
         }
+
+        // Calculate the current platform speed based on the score
+        let currentPlatformSpeed = Math.min(gameOptions.platformStartSpeed + gameOptions.score * gameOptions.platformSpeedIncrease, gameOptions.maxPlatformSpeed);
+
+        // Update the score modifier based on the current platform speed
+        gameOptions.scoreModifier = 1 + (currentPlatformSpeed - gameOptions.platformStartSpeed) / (gameOptions.maxPlatformSpeed - gameOptions.platformStartSpeed);
+
         // Set the platform's width and calculate the distance to the next platform
+        platform.setVelocityX(currentPlatformSpeed * -1);
         platform.displayWidth = platformWidth;
         this.nextPlatformDistance = Phaser.Math.Between(gameOptions.spawnRange[0], gameOptions.spawnRange[1]);
     }
@@ -229,6 +245,12 @@ class playGame extends Phaser.Scene {
             this.player.setVelocityY(gameOptions.jumpForce * -1);
             // Increment the jump count
             this.playerJumps++;
+            gameOptions.spaceReleased = false;
+        }
+        // Check if the player is in the air and the fast fall has not been initiated yet
+        else if (!this.player.body.touching.down && gameOptions.spaceReleased) {
+            // Apply downward force to simulate a fast fall
+            this.player.setVelocityY(gameOptions.fastFallForce);
         }
     }
 
@@ -256,9 +278,9 @@ class playGame extends Phaser.Scene {
         this.player.x = gameOptions.playerStartPosition;
 
         //Update the score
-        gameOptions.score += 1;
-        this.scoreText.setText("Score: " + gameOptions.score);
-        this.highScoreText.setText("High Score: " + gameOptions.highScore);
+        gameOptions.score += gameOptions.scoreModifier;
+        this.scoreText.setText("Score: " + Math.floor(gameOptions.score));
+        this.highScoreText.setText("High Score: " + Math.floor(gameOptions.highScore));
 
         // Calculate the minimum distance between the current platform and the right edge of the screen
         let minDistance = game.config.width;
