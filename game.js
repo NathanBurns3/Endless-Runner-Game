@@ -63,16 +63,47 @@ function pickBackground(latitude, longitude) {
         }
     }
     // Beach area (Coasts)
-    if (false) {
-
+    if (
+        // California coast
+        (39 < latitude && latitude < 42 && longitude < -124) ||
+        (36 < latitude && latitude < 39 && longitude < -122) ||
+        (39 < latitude && latitude < 42 && longitude < -118) ||
+        // Texas/Louisiana/Florida/Alaama/Mississippi coast
+        (26 < latitude && latitude < 29 && -97 < longitude) ||
+        (29 < latitude && latitude < 30.5 && -95 < longitude) ||
+        // Georgia/Carolina's/Virginia's/Delaware/Maryland coast
+        (30.5 < latitude && latitude < 32.5 && -81.5 < longitude) ||
+        (32.5 < latitude && latitude < 33 && -81 < longitude) ||
+        (33 < latitude && latitude < 34 && -80 < longitude) ||
+        (34 < latitude && latitude < 35 && -78.5 < longitude) ||
+        (35 < latitude && latitude < 39.75 && -77 < longitude)
+        ) {
+            // set the background to a random background in the Beaches image array
+            backgroundChoice = "Backgrounds/" + backgrounds[0][Math.floor(Math.random() * 4)];
+            console.log("The function choose: " + backgroundChoice + " as the background");
+            return;
     }
     // Desert Area (Southwest)
-    else if (false) {
-
+    else if (
+        // California/Nevada/Utah/Arizona
+        (latitude < 42 && -125 < longitude && longitude < -109) ||
+        // Texas/New Mexico/Oklahoma
+        (latitude < 37 && -109 < longitude && longitude < -95)
+        ) {
+            // set the background to a random background in the Desert image array
+            backgroundChoice = "Backgrounds/" + backgrounds[2][Math.floor(Math.random() * 4)];
+            console.log("The function choose: " + backgroundChoice + " as the background");
+            return;
     }
-    // Mountain Area (Mountain Time)
-    else if (false) {
-        
+    // Mountain Area (Mountain Time + Dakotas)
+    else if (
+        (50 < latitude && latitude < 43 && longitude < -97) ||
+        (43 < latitude && latitude < 30 && longitude < -103)
+        ) {
+            // set the background to a random background in the Mountain image array
+            backgroundChoice = "Backgrounds/" + backgrounds[4][Math.floor(Math.random() * 4)];
+            console.log("The function choose: " + backgroundChoice + " as the background");
+            return;
     }
     // Forest Area (Northern areas)
     else if (false) {

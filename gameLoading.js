@@ -25,7 +25,7 @@ class gameLoading extends Phaser.Scene {
         super("gameLoading");
     }
 
-    create() {
+    create() {     
         //variables to pass
         let lat = 0;
         let long = 0;
