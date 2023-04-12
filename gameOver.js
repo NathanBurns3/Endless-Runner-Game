@@ -10,12 +10,12 @@ class gameOver extends Phaser.Scene {
         background.alpha = 0.7;
 
         // Display score and high score
-        let scoreText = this.add.text(game.config.width / 2, game.config.height / 2 - 80, "Score: " + data.score, {
+        let scoreText = this.add.text(game.config.width / 2, game.config.height / 2 - 80, "Score: " + Math.floor(data.score), {
             font: "32px Arial",
             fill: "#ffffff"
         }).setOrigin(0.5);
 
-        let highScoreText = this.add.text(game.config.width / 2, game.config.height / 2 - 30, "High Score: " + data.highScore, {
+        let highScoreText = this.add.text(game.config.width / 2, game.config.height / 2 - 30, "High Score: " + Math.floor(data.highScore), {
             font: "32px Arial",
             fill: "#ffffff"
         }).setOrigin(0.5);
