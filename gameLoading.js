@@ -29,6 +29,7 @@ class gameLoading extends Phaser.Scene {
         //variables to pass
         let lat = 0;
         let long = 0;
+        let currentWeather = "Default";
 
         // Gets user's coordinates through the HTML Geolocation API
         function getLocation() {
@@ -42,11 +43,25 @@ class gameLoading extends Phaser.Scene {
             });
         }
         
+        // sets the coordinate variables
         function setPosition(position) {
             lat = position.coords.latitude;
             console.log("player lat in loading: " + lat);
             long = position.coords.longitude;
             console.log("player long in loading: " + long);
+            fetch(
+                "http://api.openweathermap.org/data/2.5/forecast?id=524901" +
+                "&appid=9589b014fb33bd1e3c54c18685a0497a" +
+                "&lat=" + lat +
+                "&lon=" + long +
+                "&units=imperial"
+            )
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                currentWeather = data['list'][0]['weather'][0]['description'];
+                console.log("current weather in loading: " + currentWeather);
+            });
         }
 
         // Create a semi-transparent black background
@@ -74,7 +89,8 @@ class gameLoading extends Phaser.Scene {
             // launch the PlayGame scene
             this.scene.launch("PlayGame", {
                 lat: lat,
-                long: long
+                long: long,
+                weather: currentWeather
             });
         });
     }

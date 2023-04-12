@@ -13,6 +13,7 @@ let gameOptions = {
     backgroundChoice: "",
     playerLatitude: 0,
     playerLongitude: 0,
+    playerWeather: "",
     platformSpeedIncrease: 0.025,
     maxPlatformSpeed: 1200,
     scoreModifier: 1,
@@ -111,8 +112,12 @@ function pickBackground(latitude, longitude) {
             return;
     }
     // Forest Area (Northern areas)
-    else if (false) {
-
+    else if (
+        (43 < latitude && longitude > -97)
+    ) {
+        backgroundChoice = "Backgrounds/" + backgrounds[3][Math.floor(Math.random() * 4)];
+        console.log("The function choose: " + backgroundChoice + " as the background");
+        return;
     }
     // Farm Area (Default)
     else {
@@ -121,6 +126,8 @@ function pickBackground(latitude, longitude) {
         return;
     }
 }
+
+function pickWeather()
 
 // Create the main playGame scene class
 class playGame extends Phaser.Scene {
@@ -133,15 +140,21 @@ class playGame extends Phaser.Scene {
         console.log(data);
         this.playerLatitude = data.lat;
         this.playerLongitude = data.long;
+        this.playerWeather = data.weather;
+
         gameOptions.playerLatitude = this.playerLatitude;
         gameOptions.playerLongitude = this.playerLongitude;
+        gameOptions.playerWeather = this.playerWeather;
 
         console.log("gameloading lat: " + data.lat);
         console.log("gameloading long: " + data.long);
+        console.log("gameloading weather: " + data.weather);
         console.log("this lat: " + this.playerLatitude);
         console.log("this long: " + this.playerLongitude);
+        console.log("this weather: " + this.playerWeather);
         console.log("gameOptions lat: " + gameOptions.playerLatitude);
         console.log("gameOptions long: " + gameOptions.playerLongitude);
+        console.log("gameOptions weather: " + gameOptions.playerWeather);
     }
 
     // Load assets required for the game
