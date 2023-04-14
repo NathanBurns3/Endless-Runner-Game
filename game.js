@@ -89,6 +89,7 @@ function pickBackground(latitude, longitude) {
       // set the background to a random background in the cities image array
       backgroundChoice =
         "Backgrounds/" + backgrounds[1][Math.floor(Math.random() * 4)];
+      platformChoice = "Sprites/road.png";
       console.log(
         "The function choose: " + backgroundChoice + " as the background"
       );
@@ -114,6 +115,7 @@ function pickBackground(latitude, longitude) {
     // set the background to a random background in the Beaches image array
     backgroundChoice =
       "Backgrounds/" + backgrounds[0][Math.floor(Math.random() * 4)];
+    platformChoice = "Sprites/desertfloor.png";
     console.log(
       "The function choose: " + backgroundChoice + " as the background"
     );
@@ -129,6 +131,7 @@ function pickBackground(latitude, longitude) {
     // set the background to a random background in the Desert image array
     backgroundChoice =
       "Backgrounds/" + backgrounds[2][Math.floor(Math.random() * 4)];
+    platformChoice = "Sprites/desertfloor.png";
     console.log(
       "The function choose: " + backgroundChoice + " as the background"
     );
@@ -142,6 +145,7 @@ function pickBackground(latitude, longitude) {
     // set the background to a random background in the Mountain image array
     backgroundChoice =
       "Backgrounds/" + backgrounds[4][Math.floor(Math.random() * 4)];
+    platformChoice = "Sprites/dirtpath.png";
     console.log(
       "The function choose: " + backgroundChoice + " as the background"
     );
@@ -154,6 +158,7 @@ function pickBackground(latitude, longitude) {
   else {
     backgroundChoice =
       "Backgrounds/" + backgrounds[5][Math.floor(Math.random() * 4)];
+    platformChoice = "Sprites/dirtpath.png";
     console.log(
       "The function choose: " + backgroundChoice + " as the background"
     );
@@ -252,7 +257,7 @@ class playGame extends Phaser.Scene {
 
     pickBackground(gameOptions.playerLatitude, gameOptions.playerLongitude);
     this.load.image("background", backgroundChoice);
-    this.load.image("platform", "Sprites/road.png");
+    this.load.image("platform", platformChoice);
     this.load.image("player", "Sprites/player.png");
   }
   // Set up the game objects and initial state
@@ -354,7 +359,7 @@ class playGame extends Phaser.Scene {
     // Calculate the current platform speed based on the score
     let currentPlatformSpeed = Math.min(
       gameOptions.platformStartSpeed +
-        gameOptions.score * gameOptions.platformSpeedIncrease,
+      gameOptions.score * gameOptions.platformSpeedIncrease,
       gameOptions.maxPlatformSpeed
     );
 
@@ -362,7 +367,7 @@ class playGame extends Phaser.Scene {
     gameOptions.scoreModifier =
       1 +
       (currentPlatformSpeed - gameOptions.platformStartSpeed) /
-        (gameOptions.maxPlatformSpeed - gameOptions.platformStartSpeed);
+      (gameOptions.maxPlatformSpeed - gameOptions.platformStartSpeed);
 
     // Set the platform's width and calculate the distance to the next platform
     platform.setVelocityX(currentPlatformSpeed * -1);
