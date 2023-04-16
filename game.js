@@ -17,7 +17,7 @@ let gameOptions = {
   maxPlatformSpeed: 1200,
   scoreModifier: 1,
   fastFallForce: 1000,
-  spaceReleased: true,
+  spaceReleased: true
 };
 
 // 2D array to hold backgrounds
@@ -258,7 +258,10 @@ class playGame extends Phaser.Scene {
     pickBackground(gameOptions.playerLatitude, gameOptions.playerLongitude);
     this.load.image("background", backgroundChoice);
     this.load.image("platform", platformChoice);
-    this.load.image("player", "Sprites/player.png");
+    this.load.spritesheet("player", "Sprites/players.png", {
+      frameWidth: 24,
+      frameHeight: 60
+    });
   }
   // Set up the game objects and initial state
   create() {
@@ -317,9 +320,24 @@ class playGame extends Phaser.Scene {
     );
     this.player.setGravityY(gameOptions.playerGravity);
 
-    // Set up collision detection between the player and the platforms
-    this.physics.add.collider(this.player, this.platformGroup);
+    // setting player animation
+    this.anims.create({
+      key: "run",
+      frames: this.anims.generateFrameNumbers("player", {
+        start: 0,
+        end: 1
+      }),
+      frameRate: 4,
+      repeat: -1,
+    });
 
+    // Set up collision detection between the player and the platforms
+    this.physics.add.collider(this.player, this.platformGroup, function () {
+      // play "run" animation if the player is on a platform
+      if (!this.player.anims.isPlaying) {
+        this.player.anims.play("run");
+      }
+    }, null, this);
     // Listen for spacebar input to trigger the jump action
     this.input.keyboard.on("keydown-SPACE", this.jump, this);
     // Listen for spacebar key release
@@ -394,6 +412,9 @@ class playGame extends Phaser.Scene {
       // Increment the jump count
       this.playerJumps++;
       gameOptions.spaceReleased = false;
+
+      // stops animation
+      this.player.anims.stop();
     }
     // Check if the player is in the air and the fast fall has not been initiated yet
     else if (!this.player.body.touching.down && gameOptions.spaceReleased) {
