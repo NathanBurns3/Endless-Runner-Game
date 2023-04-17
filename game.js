@@ -64,7 +64,7 @@ function pickBackground(latitude, longitude) {
         if (latitude >= cityCoordinates[i][0] && latitude <= cityCoordinates[i][1] && longitude <= cityCoordinates[i][2] && longitude >= cityCoordinates[i][3]) {
             // set the background to a random background in the cities image array
             backgroundChoice = "Backgrounds/" + backgrounds[1][Math.floor(Math.random() * 4)];
-            console.log("The function choose: " + backgroundChoice + " as the background");
+            console.log("The function chose: " + backgroundChoice + " as the background");
             return;
         }
     }
@@ -86,7 +86,7 @@ function pickBackground(latitude, longitude) {
         ) {
             // set the background to a random background in the Beaches image array
             backgroundChoice = "Backgrounds/" + backgrounds[0][Math.floor(Math.random() * 4)];
-            console.log("The function choose: " + backgroundChoice + " as the background");
+            console.log("The function chose: " + backgroundChoice + " as the background");
             return;
     }
     // Desert Area (Southwest)
@@ -98,7 +98,7 @@ function pickBackground(latitude, longitude) {
         ) {
             // set the background to a random background in the Desert image array
             backgroundChoice = "Backgrounds/" + backgrounds[2][Math.floor(Math.random() * 4)];
-            console.log("The function choose: " + backgroundChoice + " as the background");
+            console.log("The function chose: " + backgroundChoice + " as the background");
             return;
     }
     // Mountain Area (Mountain Time + Dakotas)
@@ -108,7 +108,7 @@ function pickBackground(latitude, longitude) {
         ) {
             // set the background to a random background in the Mountain image array
             backgroundChoice = "Backgrounds/" + backgrounds[4][Math.floor(Math.random() * 4)];
-            console.log("The function choose: " + backgroundChoice + " as the background");
+            console.log("The function chose: " + backgroundChoice + " as the background");
             return;
     }
     // Forest Area (Northern areas)
@@ -116,18 +116,16 @@ function pickBackground(latitude, longitude) {
         (43 < latitude && longitude > -97)
     ) {
         backgroundChoice = "Backgrounds/" + backgrounds[3][Math.floor(Math.random() * 4)];
-        console.log("The function choose: " + backgroundChoice + " as the background");
+        console.log("The function chose: " + backgroundChoice + " as the background");
         return;
     }
     // Farm Area (Default)
     else {
         backgroundChoice = "Backgrounds/" + backgrounds[5][Math.floor(Math.random() * 4)];
-        console.log("The function choose: " + backgroundChoice + " as the background");
+        console.log("The function chose: " + backgroundChoice + " as the background");
         return;
     }
 }
-
-function pickWeather()
 
 // Create the main playGame scene class
 class playGame extends Phaser.Scene {
@@ -146,12 +144,6 @@ class playGame extends Phaser.Scene {
         gameOptions.playerLongitude = this.playerLongitude;
         gameOptions.playerWeather = this.playerWeather;
 
-        console.log("gameloading lat: " + data.lat);
-        console.log("gameloading long: " + data.long);
-        console.log("gameloading weather: " + data.weather);
-        console.log("this lat: " + this.playerLatitude);
-        console.log("this long: " + this.playerLongitude);
-        console.log("this weather: " + this.playerWeather);
         console.log("gameOptions lat: " + gameOptions.playerLatitude);
         console.log("gameOptions long: " + gameOptions.playerLongitude);
         console.log("gameOptions weather: " + gameOptions.playerWeather);
@@ -163,6 +155,16 @@ class playGame extends Phaser.Scene {
         this.load.image("background", backgroundChoice);
         this.load.image("platform", "Sprites/road.png");
         this.load.image("player", "Sprites/player.png"); 
+
+        this.load.image("cloud1", "WeatherIMG/Cloud1.png");
+        this.load.image("cloud2", "WeatherIMG/Cloud2.png");
+        this.load.image("cloud3", "WeatherIMG/Cloud3.png");
+
+        this.load.image("snow", "WeatherIMG/snow.png");
+
+        this.load.image("raindrop", "WeatherIMG/raindrop.png");
+
+        this.load.image("thunder", "WeatherIMG/Thunder.png");
     }
     // Set up the game objects and initial state
     create() {
@@ -172,6 +174,126 @@ class playGame extends Phaser.Scene {
         this.background.setOrigin(0, 0);
         this.background.setScrollFactor(0);
         this.background.setDepth(-1);
+
+        // Add weather
+        // cloudy
+        if (gameOptions.playerWeather == "few clouds" || gameOptions.playerWeather == "scattered clouds" || gameOptions.playerWeather == "broken clouds") {
+            console.log("The function is going to perform: " + gameOptions.playerWeather);
+    
+            this.add.image(150, 175, "cloud1").setScale(.25);
+            this.add.image(500, 75, "cloud2").setScale(.25);
+            this.add.image(750, 150, "cloud3").setScale(.25);
+        }
+        // raining
+        else if (gameOptions.playerWeather == "shower rain" || gameOptions.playerWeather == "rain" || gameOptions.playerWeather == "mist" || gameOptions.playerWeather == "light rain") {
+            
+            const particles = this.add.particles("raindrop").setScale(.25)
+		    particles.createEmitter({
+                x: 0,
+                y: 450,
+                // emitZone
+                emitZone: {
+                    source: new Phaser.Geom.Rectangle(-game.config.width * 3, 0, game.config.width * 7, 100),
+                    type: 'random',
+                    quantity: 70
+                },
+                speedY: { min: 750, max: 800 },
+                speedX: { min: -20, max: 20 },
+                accelerationY: { random: [10, 15] },
+                // lifespan
+                lifespan: { min: 8000, max: 10000 },
+                scale: { random: [0.25, 0.75] },
+                alpha: { random: [0.1, 0.8] },
+                gravityY: 10,
+                frequency: 10,
+                // follow the player at an offiset
+                follow: this.player, 
+                followOffset: { x: -game.config.width * 0.5, y: -game.config.height - 100 }
+		    })
+
+            this.add.image(150, 175, "cloud1").setScale(.25);
+            this.add.image(500, 75, "cloud2").setScale(.25);
+            this.add.image(750, 150, "cloud3").setScale(.25);
+        }
+        // thunderstorms
+        else if (gameOptions.playerWeather == "thunderstorm") {
+            
+            const thunderParticles = this.add.particles("thunder").setScale(.75)
+            thunderParticles.createEmitter({
+                x: 0,
+                y: 200,
+                // emitZone
+                emitZone: {
+                    source: new Phaser.Geom.Rectangle(-game.config.width * 3, 0, game.config.width * 7, 100),
+                    type: 'random',
+                    quantity: 10000
+                },
+                speedX: { min: -20, max: 20 },
+                accelerationY: { random: [10, 15] },
+                // lifespan
+                lifespan: { min: 300, max: 500 },
+                scale: { random: [0.25, 0.75] },
+                alpha: { random: [0.1, 0.8] },
+                gravityY: 10,
+                frequency: 0,
+                count: 1
+            })
+
+            const particles = this.add.particles("raindrop").setScale(.25)
+		    particles.createEmitter({
+                x: 0,
+                y: 200,
+                // emitZone
+                emitZone: {
+                    source: new Phaser.Geom.Rectangle(-game.config.width * 3, 0, game.config.width * 7, 100),
+                    type: 'random',
+                    quantity: 10
+                },
+                speedY: { min: 750, max: 800 },
+                speedX: { min: -20, max: 20 },
+                accelerationY: { random: [10, 15] },
+                // lifespan
+                lifespan: { min: 8000, max: 10000 },
+                scale: { random: [0.25, 0.75] },
+                alpha: { random: [0.1, 0.8] },
+                gravityY: 10,
+                frequency: 10,
+                // follow the player at an offiset
+                follow: this.player, 
+                followOffset: { x: -game.config.width * 0.5, y: -game.config.height - 100 }
+		    })
+            
+            this.add.image(150, 75, "cloud1").setScale(.3);
+            this.add.image(500, 50, "cloud2").setScale(.3);
+            this.add.image(750, 120, "cloud3").setScale(.3);
+        }
+        // snow
+        else if (gameOptions.playerWeather == "snow") {
+            const particles = this.add.particles("snow")
+		    particles.createEmitter({
+                x: 0,
+                y: 0,
+                // emitZone
+                emitZone: {
+                    source: new Phaser.Geom.Rectangle(-game.config.width * 3, 0, game.config.width * 7, 100),
+                    type: 'random',
+                    quantity: 70
+                },
+                speedY: { min: 50, max: 70 },
+                speedX: { min: -20, max: 20 },
+                accelerationY: { random: [10, 15] },
+                // lifespan
+                lifespan: { min: 8000, max: 10000 },
+                scale: { random: [0.25, 0.75] },
+                alpha: { random: [0.1, 0.8] },
+                gravityY: 10,
+                frequency: 10,
+                blendMode: 'ADD',
+                // follow the player at an offiset
+                follow: this.player, 
+                followOffset: { x: -game.config.width * 0.5, y: -game.config.height - 100 }
+		    })
+        }
 
         // Set the initial score to 0
         gameOptions.score = 0;
