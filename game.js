@@ -242,7 +242,7 @@ class playGame extends Phaser.Scene {
             const particles = this.add.particles("raindrop").setScale(.25)
 		    particles.createEmitter({
                 x: 0,
-                y: 200,
+                y: 450,
                 // emitZone
                 emitZone: {
                     source: new Phaser.Geom.Rectangle(-game.config.width * 3, 0, game.config.width * 7, 100),
@@ -263,16 +263,16 @@ class playGame extends Phaser.Scene {
                 followOffset: { x: -game.config.width * 0.5, y: -game.config.height - 100 }
 		    })
             
-            this.add.image(150, 75, "cloud1").setScale(.3);
-            this.add.image(500, 50, "cloud2").setScale(.3);
-            this.add.image(750, 120, "cloud3").setScale(.3);
+            this.add.image(150, 75, "cloud1").setScale(.3).setTint(0x305173);
+            this.add.image(500, 50, "cloud2").setScale(.3).setTint(0x305173);
+            this.add.image(750, 120, "cloud3").setScale(.3).setTint(0x305173);
         }
         // snow
         else if (gameOptions.playerWeather == "snow") {
             const particles = this.add.particles("snow")
 		    particles.createEmitter({
                 x: 0,
-                y: 0,
+                y: 450,
                 // emitZone
                 emitZone: {
                     source: new Phaser.Geom.Rectangle(-game.config.width * 3, 0, game.config.width * 7, 100),
@@ -293,6 +293,10 @@ class playGame extends Phaser.Scene {
                 follow: this.player, 
                 followOffset: { x: -game.config.width * 0.5, y: -game.config.height - 100 }
 		    })
+
+            this.add.image(150, 175, "cloud1").setScale(.25);
+            this.add.image(500, 75, "cloud2").setScale(.25);
+            this.add.image(750, 150, "cloud3").setScale(.25);
         }
 
         // Set the initial score to 0
