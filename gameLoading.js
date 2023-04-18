@@ -23,16 +23,24 @@ window.onload = function () {
 class gameLoading extends Phaser.Scene {
   constructor() {
     super("gameLoading");
+    
+    let currentWeather = "Default";
   }
 
   async create() {
+
     let position = await GetLocation();
 
-    console.log(position);
+    this.currentWeather = await GetWeather(position.coords.latitude, position.coords.longitude);
 
+    console.log("current weather in loading: " + currentWeather);
+    
+    console.log(position);
+    
     this.scene.launch("PlayGame", {
       lat: position.coords.latitude,
       long: position.coords.longitude,
+      weather: this.currentWeather,
     });
   }
 }
@@ -40,6 +48,28 @@ class gameLoading extends Phaser.Scene {
 function GetLocation() {
   return new Promise((res, rej) => {
     navigator.geolocation.getCurrentPosition(res, rej);
+  });
+}
+
+function GetWeather(lat, long) {
+  return new Promise((weather) => {
+    console.log ("lat in weather: " + lat);
+    console.log ("long in weather: " + long);
+    fetch(
+      "http://api.openweathermap.org/data/2.5/forecast?id=524901" +
+      "&appid=9589b014fb33bd1e3c54c18685a0497a" +
+      "&lat=" + lat +
+      "&lon=" + long +
+      "&units=imperial"
+    )
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+        this.currentWeather = data['list'][0]['weather'][0]['description'];
+        console.log("current weather in function: " + currentWeather);
+
+        weather(this.currentWeather);
+      });
   });
 }
 
