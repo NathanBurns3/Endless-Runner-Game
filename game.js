@@ -1,8 +1,8 @@
 // global game options
 let gameOptions = {
-    platformStartSpeed: 500,
-    spawnRange: [100, 500],
-    platformSizeRange: [275, 425],
+    platformStartSpeed: 450,
+    spawnRange: [100, 350],
+    platformSizeRange: [300, 500],
     playerGravity: 1000,
     jumpForce: 500,
     playerStartPosition: 200,
