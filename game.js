@@ -166,8 +166,7 @@ class playGame extends Phaser.Scene {
     console.log(data);
     this.playerLatitude = data.lat;
     this.playerLongitude = data.long;
-    //this.playerWeather = data.weather;
-    this.playerWeather = "snow";
+    this.playerWeather = data.weather;
 
     gameOptions.playerLatitude = this.playerLatitude;
     gameOptions.playerLongitude = this.playerLongitude;
