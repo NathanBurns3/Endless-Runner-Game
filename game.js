@@ -18,7 +18,8 @@ let gameOptions = {
     maxPlatformSpeed: 1200,
     scoreModifier: 1,
     fastFallForce: 1000,
-    spaceReleased: true
+    spaceReleased: true,
+    backgroundScale: .7,
 };
 
 // 2D array to hold backgrounds
@@ -132,6 +133,7 @@ function pickBackground(latitude, longitude) {
             // set the background to a random background in the Mountain image array
             backgroundChoice = "Backgrounds/" + backgrounds[4][Math.floor(Math.random() * 4)];
             platformChoice = "Sprites/dirtpath.png";
+            backgroundScale = 2.4;
             console.log("The function chose: " + backgroundChoice + " as the background");
             return;
     }
@@ -148,6 +150,7 @@ function pickBackground(latitude, longitude) {
     else {
         backgroundChoice = "Backgrounds/" + backgrounds[5][Math.floor(Math.random() * 4)];
         platformChoice = "Sprites/dirtpath.png";
+        backgroundScale = .3;
         console.log("The function chose: " + backgroundChoice + " as the background");
         return;
     }
@@ -263,7 +266,7 @@ class playGame extends Phaser.Scene {
   // Set up the game objects and initial state
   create() {
     // Create the background image and set its properties
-    this.add.image(0, 0, "background").setOrigin(0);
+    this.add.image(0, 0, "background").setOrigin(0).setScale(gameOptions.backgroundScale);
     this.background = this.add.tileSprite(
       0,
       0,
@@ -436,6 +439,7 @@ class playGame extends Phaser.Scene {
       "player"
     );
     this.player.setGravityY(gameOptions.playerGravity);
+    this.player.setScale(2);
 
     // setting player animation
     this.anims.create({
