@@ -57,7 +57,7 @@ function GetWeather(lat, long) {
     console.log ("long in weather: " + long);
     fetch(
       "http://api.openweathermap.org/data/2.5/forecast?id=524901" +
-      "&appid=9589b014fb33bd1e3c54c18685a0497a" +
+      "&appid=" + config.WeatherKey +
       "&lat=" + lat +
       "&lon=" + long +
       "&units=imperial"
