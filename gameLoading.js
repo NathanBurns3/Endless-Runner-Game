@@ -58,7 +58,7 @@ function GetWeather(lat, long) {
     fetch(
       "http://api.openweathermap.org/data/2.5/forecast?id=524901" +
       //"&appid=" + config.WeatherKey +
-      "&appid=" + 'b081dd4b9f0cdd4a69867adf2e5adafd' +
+      "&appid=" + 'API-KEY' +
       "&lat=" + lat +
       "&lon=" + long +
       "&units=imperial"
